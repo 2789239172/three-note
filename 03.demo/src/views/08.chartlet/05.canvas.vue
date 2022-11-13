@@ -7,6 +7,38 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import aImg from '@/assets/a.jpg'
 import mp4 from '@/assets/0.0.mp4'
+	function getTextMesh({width, height, bgColor = "#ff00ff", textColor = "#000000", fontSize='12px', text = 'text'}) {
+			var canvas = document.createElement("canvas");
+			var c = canvas.getContext('2d');
+
+			canvas.width = width;
+			canvas.height = height;
+
+			c.clearRect(0, 0, width, height)
+			c.beginPath();
+			// 矩形区域填充背景
+			c.fillStyle = bgColor;
+			c.fillRect(0, 0, width, height);
+			// c.beginPath();
+			// 文字
+			c.beginPath();
+			c.translate(width / 2, height / 2);
+			c.fillStyle = textColor; //文本填充颜色
+			c.font = `normal ${fontSize}`; //字体样式设置
+			c.textBaseline = "middle"; //文本与fillText定义的纵坐标
+			c.textAlign = "center"; //文本居中(以fillText定义的横坐标)
+			c.fillText(text, 0, 0);
+
+      //矩形平面
+      var geometry = new THREE.PlaneGeometry(width, height);
+			var texture = new THREE.CanvasTexture(canvas);
+
+      var material = new THREE.MeshPhongMaterial({
+        map: texture, // 设置纹理贴图
+      });
+      // 创建一个矩形平面网模型，Canvas画布作为矩形网格模型的纹理贴图
+      return new THREE.Mesh(geometry, material);
+		}
 export default {
   name: "",
   components: {},
@@ -89,6 +121,15 @@ export default {
       requestAnimationFrame(this.render); //请求再次执行渲染函数render
     },
     createGeometry() {
+    //   		const text = getTextMesh({
+		// 	width: 200,
+		// 	height: 20,
+		// 	text: '测试测试测试测试测试测试测试',
+		// 	textColor: '#ffffff',
+		// 	bgColor: '#000',
+		// 	fontSize: '20px'
+		// })
+		// this.scene.add(text);
       // 1. canvas画布对象作为CanvasTexture的参数重建一个纹理对象
       // canvas画布可以理解为一张图片
       var texture = new THREE.CanvasTexture(this.canvas);
@@ -103,50 +144,6 @@ export default {
       // 创建一个矩形平面网模型，Canvas画布作为矩形网格模型的纹理贴图
       var mesh = new THREE.Mesh(geometry, material);
       this.scene.add(mesh)
-
-
-      // 2. canvas画布加载图片
-      var canvas = document.createElement("canvas");
-      canvas.width = 512;
-      canvas.height = 128;
-      var ctx = canvas.getContext('2d');
-      var Image = document.createElement('img');
-      var texture = new THREE.CanvasTexture(canvas);
-      Image.src = aImg;
-      Image.onload = function() {
-        var bg = ctx.createPattern(Image, "no-repeat");
-        ctx.rect(0,0,canvas.width, canvas.height);
-        ctx.fillStyle=bg;
-        ctx.fill();
-        texture.needsUpdate = true;
-      }
-      //矩形平面
-      var geometry = new THREE.PlaneGeometry(128, 32);
-      var material = new THREE.MeshPhongMaterial({
-        map: texture, // 设置纹理贴图
-      });
-      // 创建一个矩形平面网模型，Canvas画布作为矩形网格模型的纹理贴图
-      var mesh = new THREE.Mesh(geometry, material);
-      mesh.position.set(0, 200, 0)
-      this.scene.add(mesh)
-
-
-      // 3. 视频作为Three.js纹理贴图
-      // 创建video对象
-      let video = document.createElement('video');
-      video.src = mp4; // 设置视频地址
-      video.autoplay = "autoplay"; //要设置播放
-      video.loop = true
-      // video对象作为VideoTexture参数创建纹理对象
-      var vtexture = new THREE.VideoTexture(video)
-      var geometry = new THREE.PlaneGeometry(108, 71); //矩形平面
-      var material = new THREE.MeshPhongMaterial({
-        map: vtexture, // 设置纹理贴图
-      }); //材质对象Material
-      var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
-      mesh.position.set(250, 0, 0)
-      this.scene.add(mesh); //网格模型添加到场景中
-
     },
   },
 };

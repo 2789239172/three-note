@@ -16,9 +16,9 @@ export default {
   data() {
     return {
       name: "parent",
-      w: 30000,
+      w: 300000,
       threeOptions: {
-        camera: [0, 500, 5000],
+        camera: [0, 20000, 10000],
         AxisHelperNum: 1500,
         point: [0, 4000, 4000],
         cameraFar: Number.MAX_SAFE_INTEGER,
@@ -56,76 +56,81 @@ export default {
     const removeHelper = () => (this.boxHelper.visible = false);
 
     // 居民楼
-    // this.$loadModel(assets.jb).then(resBuilding => {
-    //   this.$scene.add(resBuilding)
-    // })
+    this.$loadModel(assets.jb).then(resBuilding => {
+      this.$scene.add(resBuilding)
+      console.log('resBuilding', resBuilding)
+      resBuilding.children[0].children.forEach(item => {
+        this.$addEvent(item, 'mouseover', addHelper)
+        this.$addEvent(item, 'mouseout', removeHelper)
+      });
+    })
 
-    // 绘制道路
-    let texture = this.$loadTexture("/chartlet/way.jpg");
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-    // uv两个方向纹理重复数量
-    texture.repeat.set(0.01, 0.01);
+    // // 绘制道路
+    // let texture = this.$loadTexture("/chartlet/way.jpg");
+    // texture.wrapS = THREE.RepeatWrapping;
+    // texture.wrapT = THREE.RepeatWrapping;
+    // // uv两个方向纹理重复数量
+    // texture.repeat.set(0.01, 0.01);
 
-    var shape = new THREE.Shape();
-    /**四条直线绘制一个矩形轮廓*/
-    shape.moveTo(0, 0); //起点
-    shape.lineTo(0, 20); //第2点
-    shape.lineTo(5, 20); //第3点
-    shape.lineTo(5, 0); //第4点
-    shape.lineTo(0, 0); //第5点
+    // var shape = new THREE.Shape();
+    // /**四条直线绘制一个矩形轮廓*/
+    // shape.moveTo(0, 0); //起点
+    // shape.lineTo(0, 20); //第2点
+    // shape.lineTo(5, 20); //第3点
+    // shape.lineTo(5, 0); //第4点
+    // shape.lineTo(0, 0); //第5点
 
-    // var curve = new THREE.CatmullRomCurve3([
-    //   new THREE.Vector3(0, 0, 0),
-    //   new THREE.Vector3(0, 0, 5000),
-    //   new THREE.Vector3(5000, 0, 5000),
-    //   // new THREE.Vector3(-5, 0, 100),
-    // ]);
-    // CurvePath多段路径生成管道案例
-    // 绘制一个U型轮廓
-    var R = 80; //圆弧半径
-    var arc = new THREE.ArcCurve(0, 0, R, 0, Math.PI, true);
-    // 半圆弧的一个端点作为直线的一个端点
-    var line1 = new THREE.LineCurve(
-      new THREE.Vector2(R, 200, 0),
-      new THREE.Vector2(R, 0, 0)
-    );
-    var line2 = new THREE.LineCurve(
-      new THREE.Vector2(-R, 0, 0),
-      new THREE.Vector2(-R, 200, 0)
-    );
-    // 创建组合曲线对象CurvePath
-    var CurvePath = new THREE.CurvePath();
-    // 把多个线条插入到CurvePath中
-    CurvePath.curves.push(line1, arc, line2);
+    // // var curve = new THREE.CatmullRomCurve3([
+    // //   new THREE.Vector3(0, 0, 0),
+    // //   new THREE.Vector3(0, 0, 5000),
+    // //   new THREE.Vector3(5000, 0, 5000),
+    // //   // new THREE.Vector3(-5, 0, 100),
+    // // ]);
+    // // CurvePath多段路径生成管道案例
+    // // 绘制一个U型轮廓
+    // var R = 80; //圆弧半径
+    // var arc = new THREE.ArcCurve(0, 0, R, 0, Math.PI, true);
+    // // 半圆弧的一个端点作为直线的一个端点
+    // var line1 = new THREE.LineCurve(
+    //   new THREE.Vector2(R, 200, 0),
+    //   new THREE.Vector2(R, 0, 0)
+    // );
+    // var line2 = new THREE.LineCurve(
+    //   new THREE.Vector2(-R, 0, 0),
+    //   new THREE.Vector2(-R, 200, 0)
+    // );
+    // // 创建组合曲线对象CurvePath
+    // var CurvePath = new THREE.CurvePath();
+    // // 把多个线条插入到CurvePath中
+    // CurvePath.curves.push(line1, arc, line2);
 
-    var geometry = new THREE.BufferGeometry();
-    geometry.setFromPoints(CurvePath.getPoints(100));
-    var material = new THREE.LineBasicMaterial({
-      color: 0xff0000,
-    });
-    var line = new THREE.Line(geometry, material);
-    this.$scene.add(line);
-    var geometry = new THREE.ExtrudeGeometry( //拉伸造型
-      shape, //二维轮廓
-      //拉伸参数
-      {
-        // amount: 120, //拉伸长度
-        extrudePath: CurvePath, //选择扫描轨迹
-        bevelEnabled: false, //无倒角
-        steps: 50, //扫描方向细分数
-      }
-    );
-    var material = new THREE.MeshLambertMaterial({
-      // color: 0x0000ff,
-      map: texture,
-      side: THREE.DoubleSide,
-      // size:5.0//点对象像素尺寸
-    }); //材质对象
+    // var geometry = new THREE.BufferGeometry();
+    // geometry.setFromPoints(CurvePath.getPoints(100));
+    // var material = new THREE.LineBasicMaterial({
+    //   color: 0xff0000,
+    // });
+    // var line = new THREE.Line(geometry, material);
+    // this.$scene.add(line);
+    // var geometry = new THREE.ExtrudeGeometry( //拉伸造型
+    //   shape, //二维轮廓
+    //   //拉伸参数
+    //   {
+    //     // amount: 120, //拉伸长度
+    //     extrudePath: CurvePath, //选择扫描轨迹
+    //     bevelEnabled: false, //无倒角
+    //     steps: 50, //扫描方向细分数
+    //   }
+    // );
+    // var material = new THREE.MeshLambertMaterial({
+    //   // color: 0x0000ff,
+    //   map: texture,
+    //   side: THREE.DoubleSide,
+    //   // size:5.0//点对象像素尺寸
+    // }); //材质对象
 
-    var mesh = new THREE.Mesh(geometry, material); //点模型对象
-    mesh.position.set(0, 5, 0);
-    this.$scene.add(mesh); //点模型添加到场景中
+    // var mesh = new THREE.Mesh(geometry, material); //点模型对象
+    // mesh.position.set(0, 5, 0);
+    // this.$scene.add(mesh); //点模型添加到场景中
 
     /**
      * 2. 创建扫描网格模型

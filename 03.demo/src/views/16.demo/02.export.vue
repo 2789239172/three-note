@@ -4,7 +4,7 @@
     <!-- <loading class="loading"/> -->
     <div class="select-view">
       <p>已选中: </p>
-      <p v-for="(item, i) in selectList" :key="i">{{item.name}}</p>
+      <p v-for="(item, i) in selectList" :key="i">{{item.uuid}}</p>
     </div>
     <div class="btn-wrapper">
       <el-button type="error" @click="clear">清空</el-button>
@@ -55,7 +55,9 @@ export default {
     // click 
     const toggleList = (obj) => {
       const index = this.selectList.findIndex(item => item.name == obj.name) 
+
       if (index === -1) {
+      console.log('click', index, obj)
         this.selectList.push(obj)
       } else { 
         this.selectList.splice(index, 1)
@@ -97,16 +99,18 @@ export default {
 
       // this.$scene.add(this.exportGroup)
       var exporter = new GLTFExporter();
+
       exporter.parse( this.exportGroup, buffer => {
         var blob = new Blob([buffer]);
         this.downloadUrl = URL.createObjectURL(blob);
+         alert('下载地址获取成功: ' + this.downloadUrl)
       }, { binary: true });
     },
     clear() {
       this.selectList = []
     },
     download() {
-      if (!this.downloadUrl) return
+      if (!this.downloadUrl) return alert('请先获取下载地址')
       let a = document.createElement('a')
       a.href = this.downloadUrl
       a.download = 'file.glb'

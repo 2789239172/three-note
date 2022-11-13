@@ -10,5 +10,5 @@ export default{
   resBuilding: '/demo/juminlou.glb',
   buildings: '/buildings.fbx',
   dog: '/dog/Pug/pug.obj',
-  jb: '/modles/dd.glb'
+  jb: '/modles/building3.glb'
 }
